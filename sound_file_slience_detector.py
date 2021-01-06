@@ -4,6 +4,7 @@ import wave
 import sys
 
 #Moving average for smoother curves
+#moving_average is an integer
 #if moving_averages = 1, then the output is the same dataset as the input
 #the more, the smoother the output dataset
 #input_data and output_data (return) are both numpy datasets
@@ -19,7 +20,7 @@ def moving_average(moving_averages, input_data):
             print(f"%d : (%.2f)+(%.2f) = %.2f" % (i, x_before, input_data[i], x))
 
         print(f"Summed : %.2f" % (x))
-        x = float(x) / float(moving_averages)
+        x = x / float(moving_averages)
         print(f"Averaged : %.2f" % (x))
 
         output_data = np.append(output_data, x)
