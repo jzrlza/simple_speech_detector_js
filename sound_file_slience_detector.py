@@ -33,9 +33,9 @@ def get_moving_average(input_data, moving_averages):
 def get_ema_value(input_data, w_decrease, t):
     output_data = np.array([])
     if t = 1:
-        return np.array([input_data[t]])
+        return np.array(output_data, input_data[t])
 
-    return np.array([w_decrease*input_data[t] + (1-w_decrease)*get_ema_value(input_data, w_decrease, t-1)])
+    return np.array(output_data, w_decrease*input_data[t] + (1-w_decrease)*get_ema_value(input_data, w_decrease, t-1))
     
 
 #path of the audio file
