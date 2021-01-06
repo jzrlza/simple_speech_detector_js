@@ -1,0 +1,18 @@
+<html>
+<body>
+	<input id="audio_file" type="file" accept="audio/*" />
+	<!-- <audio control id="audio_player" /> -->
+	<p>
+	<audio controls id="audio_player"></audio>
+	</p>
+</body>
+<script>
+
+	audio_file.onchange = function(){
+    var files = this.files;
+    var file = URL.createObjectURL(files[0]); 
+    audio_player.src = file; 
+    audio_player.play();
+	};
+</script>
+</html>
