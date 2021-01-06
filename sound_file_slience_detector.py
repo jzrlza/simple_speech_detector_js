@@ -8,7 +8,7 @@ import sys
 #if moving_averages = 1, then the output is the same dataset as the input
 #the more, the smoother the output dataset
 #input_data and output_data (return) are both numpy datasets
-def moving_average(moving_averages, input_data):
+def get_moving_average(input_data, moving_averages):
     output_data = np.array([])
     for j in range(len(input_data) - 1) :
         print("%d of %d" % (j, len(input_data)))
@@ -56,12 +56,9 @@ print("Time : "+str(time_steps)+" steps")
 print(time)
 print("Timesteps per sec : "+str(time_steps_per_second))
 
-#Moving average for smoother curves
-#if = 1, then it is the same set
-#the more, the smoother
 moving_averages = 3
 
-smooth_signal = moving_average(moving_averages, signal)
+smooth_signal = get_moving_average(signal, moving_averages)
 
 print("Finished")
 
