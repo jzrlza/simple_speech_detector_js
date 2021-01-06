@@ -1,31 +1,36 @@
-def playsound(sound, block = True):
-    from ctypes import c_buffer, windll
-    from random import random
-    from time   import sleep
-    from sys    import getfilesystemencoding
+import matplotlib.pyplot as plt
+import numpy as np
+import wave
+import sys
 
-    def winCommand(*command):
-        buf = c_buffer(255)
-        command = ' '.join(command).encode(getfilesystemencoding())
-        errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
-        if errorCode:
-            errorBuffer = c_buffer(255)
-            windll.winmm.mciGetErrorStringA(errorCode, errorBuffer, 254)
-            exceptionMessage = ('\n    Error ' + str(errorCode) + ' for command:'
-                                '\n        ' + command.decode() +
-                                '\n    ' + errorBuffer.value.decode())
-            raise PlaysoundException(exceptionMessage)
-        return buf.value
+#path of the audio file
+audio_data = wave.open("test_voice.wav", "r")
 
-    alias = 'playsound_' + str(random())
-    winCommand('open "' + sound + '" alias', alias)
-    winCommand('set', alias, 'time format milliseconds')
-    durationInMS = winCommand('status', alias, 'length')
-    winCommand('play', alias, 'from 0 to', durationInMS.decode())
-    print(str(float(durationInMS) / 1000.0))
+signal = audio_data.readframes(-1)
+signal = np.fromstring(signal, "Int16")
+fs = audio_data.getframerate()
 
-    if block:
-        sleep(float(durationInMS) / 1000.0)
+# If Stereo
+if audio_data.getnchannels() == 2:
+    print("Just mono files")
+    sys.exit(0)
+
+signal_steps = len(signal)
 
 
-playsound("cyriak.mp3")
+time = np.linspace(0, signal_steps / fs, num=signal_steps)
+
+time_steps = len(time)
+
+print("Signals : "+str(signal_steps))
+print(signal)
+print("Time : "+str(time_steps))
+print(time)
+
+plt.figure(1)
+plt.title("Signal Wave...")
+plt.plot(time, signal)
+plt.show()
+
+
+#Now for 1 second per timestep...
