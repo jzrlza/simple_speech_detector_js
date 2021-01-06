@@ -3,16 +3,64 @@
 	<input id="audio_file" type="file" accept="audio/*" />
 	<!-- <audio control id="audio_player" /> -->
 	<p>
-	<audio controls id="audio_player"></audio>
+	<!--<audio controls id="audio_player"></audio>-->
+	<button id="test">Test</button>
 	</p>
 </body>
 <script>
 
+	var audio = new Audio();
+	
+
 	audio_file.onchange = function(){
     var files = this.files;
     var file = URL.createObjectURL(files[0]); 
-    audio_player.src = file; 
-    audio_player.play();
+    audio.src = file; 
+    audio.load();
+
+    audio.controls = true;
+	audio.autoplay = true;
+
+	var audioContext = new AudioContext();
+
+	var analyser = audioContext.createAnalyser();
+	analyser.connect(audioContext.destination);
+	console.log(audio);
+	var source = audioContext.createMediaElementSource(audio);
+	source.connect(analyser);
+
+	getDataFromAudio = function(){
+	  //analyser.fftSize = 2048;
+	  var freqByteData = new Uint8Array(analyser.fftSize/2);
+	  var timeByteData = new Uint8Array(analyser.fftSize/2);
+	  analyser.getByteFrequencyData(freqByteData);
+	  analyser.getByteTimeDomainData(timeByteData);
+	  return {f:freqByteData, t:timeByteData}; // array of all 1024 levels
+	}
+	
+	test.onclick = function(){
+		data = getDataFromAudio();
+		currentTime = audio.currentTime;
+		console.log(data.f);
+		console.log(currentTime);
+	}
+
+
 	};
+
+	
+	
+
+
+	
+	
+
+	
+
+	
+
+
+
+
 </script>
 </html>
