@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import wave
 import sys
 import math
+import json
 
 #####Functions#####
 
@@ -42,7 +43,7 @@ if audio_data.getnchannels() == 2:
 time = np.linspace(0, len(signal) / fs, num=len(signal))
 time = time.tolist()
 ##Threshold settings##
-voice_sd_threshold = 160
+voice_sd_threshold = 320
 steps_threshold = 20
 
 #Values
