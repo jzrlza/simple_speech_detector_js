@@ -43,8 +43,8 @@ if audio_data.getnchannels() == 2:
 time = np.linspace(0, len(signal) / fs, num=len(signal))
 time = time.tolist()
 ##Threshold settings##
-voice_sd_threshold = 1280
-steps_threshold = 20
+voice_sd_threshold = 2560
+steps_threshold = 33
 
 #Values
 timestamp_of_recent_silence = {}
