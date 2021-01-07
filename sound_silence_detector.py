@@ -29,7 +29,7 @@ def get_sd(data, mean, start, end):
     return math.sqrt(summation/n)
 
 ##INPUT##
-audio_data = wave.open("test_voice.wav", "r")
+audio_data = wave.open("test_voice_real.wav", "r")
 
 signal = audio_data.readframes(-1)
 signal = np.fromstring(signal, "Int16")
