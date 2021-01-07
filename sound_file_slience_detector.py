@@ -30,12 +30,12 @@ def get_moving_average(input_data, moving_averages):
     return output_data
 
 #exponiential moving average for each
-def get_ema_value(input_data, w_decrease, t):
+def get_ema(input_data, w_decrease, t):
     output_data = np.array([])
-    if t = 1:
+    if t = 0:
         return np.append(output_data, input_data[t])
 
-    return np.append(output_data, w_decrease*input_data[t] + (1-w_decrease)*get_ema_value(input_data, w_decrease, t-1))
+    return np.append(output_data, w_decrease*input_data[t] + (1-w_decrease)*get_ema(input_data, w_decrease, t-1))
     
 
 #path of the audio file
@@ -66,8 +66,10 @@ print(time)
 print("Timesteps per sec : "+str(time_steps_per_second))
 
 moving_averages = 3
+w_decrease = 2
 
 smooth_signal = get_moving_average(signal, moving_averages)
+#smooth_signal = get_ema(signal, w_decrease, len(signal)-1)
 
 print("Finished")
 
