@@ -7,20 +7,6 @@ import json
 
 #####Functions#####
 
-def sma(data, t):
-    print("dd")
-
-def ema(data, t, i):
-    if i == 0:
-        return sma(data,t, start, end)
-    k = 2/(t+1)
-    ema = data[i]*k + (1-k)*data[i-1]
-    return ema
-    #n = end_point + 1 - start_point
-    #for timestep in range(start_point, end_point+1):
-    #    print("dd")
-    #    if timestep == 0:
-
 def get_sd(data, mean, start, end):
     summation = 0.0
     n = end - start + 1
@@ -29,7 +15,7 @@ def get_sd(data, mean, start, end):
     return math.sqrt(summation/n)
 
 ##INPUT##
-audio_data = wave.open("test_voice_real.wav", "r")
+audio_data = wave.open("test_voice.wav", "r")
 
 signal = audio_data.readframes(-1)
 signal = np.fromstring(signal, "Int16")
@@ -43,12 +29,14 @@ if audio_data.getnchannels() == 2:
 time = np.linspace(0, len(signal) / fs, num=len(signal))
 time = time.tolist()
 ##Threshold settings##
-voice_sd_threshold = 2560
-steps_threshold = 33
+voice_sd_threshold = 480
+steps_threshold = 201
 
 #Values
 timestamp_of_recent_silence = {}
 timestamp_of_recent_silence_lst = []
+timestamp_of_loud_or_not = []
+is_loud = False
 summation = 0.0
 average_chunk = 0.0
 prev_sd = 0.0
@@ -64,7 +52,6 @@ for timestamp in range(len(signal)):
         #print("SUM "+str(average_chunk))
         average_chunk = summation / steps_threshold
         #print("AVG "+str(average_chunk))
-        #mean = ema(data, t, i)
 
         sd = get_sd(signal,average_chunk,start,timestamp)
         #print("SD "+str(sd))
@@ -73,11 +60,16 @@ for timestamp in range(len(signal)):
             #print("LOUD!!")
             timestamp_of_recent_silence.update({timestamp:"at_this_timestep_the_silience_ended"})
             timestamp_of_recent_silence_lst.append(timestamp)
+            is_loud = True
+        else:
+            is_loud = False
             
         average_chunk = 0.0
         start = timestamp+1
         prev_sd = sd
         sd = 0.0
+
+    timestamp_of_loud_or_not.append(is_loud)
         
 ###OUTPUT###
 with open("output_timestamps.json","w", encoding="utf-8") as jsonfile:
@@ -87,7 +79,12 @@ with open("output_timestamps.json","w", encoding="utf-8") as jsonfile:
 plt.figure(1)
 plt.title("Signal Wave...")
 
-plt.plot(time, signal, label="sound")
-plt.plot(time, signal, markevery=timestamp_of_recent_silence_lst, ls="", marker="o", label="points")
-plt.show()
+fig, ax = plt.subplots()
 
+ax.plot(time, signal, label="sound")
+#ax.grid()
+ax.fill_between(time, 0,1, color='#539ecd', where=timestamp_of_loud_or_not, transform=ax.get_xaxis_transform())
+#ax.grid()
+#plt.plot(time, signal, markevery=timestamp_of_recent_silence_lst, ls="", marker="o", label="points")
+plt.show()
+plt.close()
