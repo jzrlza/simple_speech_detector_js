@@ -7,6 +7,11 @@ import json
 
 #####Functions#####
 
+#Get Standard Deviation (rate of value change in a data chunk)
+#data => numpy or list of numbers (np, list)
+#mean => calculated mean of the data, this to avoid looping again (float)
+#start => start index of the data (int)
+#end => end index of the data, matches the last one (int)
 def get_sd(data, mean, start, end):
     summation = 0.0
     n = end - start + 1
@@ -26,15 +31,16 @@ if audio_data.getnchannels() == 2:
     print("Just mono files")
     sys.exit(0)
 
+#Time list
 time = np.linspace(0, len(signal) / fs, num=len(signal))
 time = time.tolist()
-##Threshold settings##
+
+####Threshold settings####
 voice_sd_threshold = 480
 steps_threshold = 201
 
-#Values
+###Values###
 timestamp_of_recent_silence = {}
-timestamp_of_recent_silence_lst = []
 timestamp_of_loud_or_not = []
 is_loud = False
 summation = 0.0
@@ -44,26 +50,26 @@ start = 0
 
 ####Loop through Time####
 for timestamp in range(len(signal)):
+    #Print progress, as this may take time
     print("%d of %d timestep" % (timestamp, len(signal)-1))
-    summation += signal[timestamp]
-    #print(signal[timestamp])
     
+    #Do a summation, so we are able to loop just once for better runtime.
+    summation += signal[timestamp]
+
+    #Finish a chunk
     if (timestamp+1) % steps_threshold == 0:
-        #print("SUM "+str(average_chunk))
         average_chunk = summation / steps_threshold
-        #print("AVG "+str(average_chunk))
 
         sd = get_sd(signal,average_chunk,start,timestamp)
-        #print("SD "+str(sd))
 
+        #Loud check
         if sd - prev_sd > voice_sd_threshold :
-            #print("LOUD!!")
             timestamp_of_recent_silence.update({timestamp:"at_this_timestep_the_silience_ended"})
-            timestamp_of_recent_silence_lst.append(timestamp)
             is_loud = True
         else:
             is_loud = False
-            
+
+        #reset and go to next chunk
         average_chunk = 0.0
         start = timestamp+1
         prev_sd = sd
@@ -82,9 +88,7 @@ plt.title("Signal Wave...")
 fig, ax = plt.subplots()
 
 ax.plot(time, signal, label="sound")
-#ax.grid()
 ax.fill_between(time, 0,1, color='#539ecd', where=timestamp_of_loud_or_not, transform=ax.get_xaxis_transform())
-#ax.grid()
-#plt.plot(time, signal, markevery=timestamp_of_recent_silence_lst, ls="", marker="o", label="points")
+
 plt.show()
-plt.close()
+
