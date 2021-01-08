@@ -64,7 +64,8 @@ for timestamp in range(len(signal)):
 
         #Loud check
         if sd - prev_sd > voice_sd_threshold :
-            timestamp_of_recent_silence.update({timestamp:"at_this_timestep_the_silience_ended"})
+            seconds = f"%.2f seconds" % (time[timestamp])
+            timestamp_of_recent_silence.update({timestamp:seconds})
             is_loud = True
         else:
             is_loud = False
